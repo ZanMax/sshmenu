@@ -1,14 +1,14 @@
-#sshmenu written on GO
+# sshmenu written on GO
 
 **sshmenu** is a simple tool for connecting to remote hosts via ssh written on GO.
 Great if you have trouble remembering IP addresses, hostnames, usernames or path to a key file.
 
-##Quick Setup
+## Quick Setup
 - `go build sshmenu.go`
 - `chmod +x sshmenu`
 - `./sshmenu`
 
-##Configuration
+## Configuration
 Edit config.json file
 
         {
@@ -17,7 +17,7 @@ Edit config.json file
             "options": [""]
         },
 
-###Options examples
+### Options examples
 
 | Option | Description                    |
 | ------------- | ------------------------------ |
