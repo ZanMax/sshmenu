@@ -1,0 +1,14 @@
+{
+    "targets": [
+        {
+            "host": "192.168.0.1",
+            "friendly":"Server 1",
+            "options": ["-ldev"]
+        },
+        {
+            "host": "192.168.0.2",
+            "friendly":"Server 2",
+            "options": ["-lroot","-i~/.ssh/id_rsa"]
+        },
+    ]
+}
