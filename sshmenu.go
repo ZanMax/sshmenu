@@ -3,13 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/AlecAivazis/survey/v2"
 	"io/ioutil"
 	"log"
+	"moul.io/banner"
 	"os"
 	"os/exec"
 	"strings"
-
-	"github.com/manifoldco/promptui"
 )
 
 type Targets struct {
@@ -23,17 +23,14 @@ type Server struct {
 }
 
 func main() {
+	fmt.Println(banner.Inline("ssh menu"))
 	data, err := ioutil.ReadFile("config.json")
-	if err != nil {
-		fmt.Print(err)
-	}
+	checkError(err)
 
 	var target Targets
 
 	err = json.Unmarshal(data, &target)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
+	checkError(err)
 
 	var servers []string
 
@@ -41,20 +38,25 @@ func main() {
 		servers = append(servers, target.Targets[i].Host+" | "+target.Targets[i].Friendly)
 	}
 
-	prompt := promptui.Select{
-		Label: "Select server",
-		Items: servers,
-		Size:  len(target.Targets),
+	var qs = []*survey.Question{
+		{
+			Name: "server",
+			Prompt: &survey.Select{
+				Message: "Choose server:",
+				Options: servers,
+				Default: servers[0],
+			},
+		},
 	}
 
-	_, result, err := prompt.Run()
+	answers := struct {
+		Server string `survey:"server"`
+	}{}
 
-	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
-		return
-	}
+	err = survey.Ask(qs, &answers)
+	checkError(err)
 
-	serverIP := strings.TrimSpace(strings.Split(result, "|")[0])
+	serverIP := strings.TrimSpace(strings.Split(answers.Server, "|")[0])
 
 	hostOptions := getSettings(target, serverIP)
 	connectSettings := append(hostOptions, serverIP)
@@ -83,5 +85,12 @@ func connectSSH(param ...string) {
 
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func checkError(err error) {
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }
