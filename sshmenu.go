@@ -9,6 +9,8 @@ import (
 	"moul.io/banner"
 	"os"
 	"os/exec"
+	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -22,9 +24,20 @@ type Server struct {
 	Options  []string `json:"options"`
 }
 
+func clear() {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	err := cmd.Run()
+	checkError(err)
+}
+
 func main() {
+	clear()
 	fmt.Println(banner.Inline("ssh menu"))
-	data, err := ioutil.ReadFile("config.json")
+	appDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	checkError(err)
+	configPath := path.Join(appDir, "config.json")
+	data, err := ioutil.ReadFile(configPath)
 	checkError(err)
 
 	var target Targets
