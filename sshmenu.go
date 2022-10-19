@@ -53,7 +53,7 @@ func main() {
 		Server string `survey:"server"`
 	}{}
 
-	err = survey.Ask(qs, &answers)
+	err = survey.Ask(qs, &answers, survey.WithPageSize(len(servers)))
 	checkError(err)
 
 	serverIP := strings.TrimSpace(strings.Split(answers.Server, "|")[0])
